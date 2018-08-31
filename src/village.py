@@ -59,6 +59,16 @@ def open_resources(browser: client) -> None:
     browser.click(btn, 1)
 
 
+def open_map(browser: client) -> None:
+    btn = browser.find("//a[@id='optimizly_mainnav_map']")
+    classes = btn.get_attribute("class")
+
+    if "active" in classes:
+        return
+
+    browser.click(btn, 1)
+
+
 def open_building(browser: client, building: int) -> None:
     # todo open by slot id
     img = browser.find(
