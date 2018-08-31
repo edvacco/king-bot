@@ -2,11 +2,15 @@ from .custom_driver import client, use_browser
 from .utils import log
 from .util_game import close_modal
 import time
-from .village import open_city
+from .village import open_city, open_map
 
-def robber_hideout_thread(browser: client, interval: int) -> None:
+
+def robber_hideout_thread(browser: client, village: int, interval: int) -> None:
     while True:
         robber = check_robber(browser)
+
+        log(robber)
+        """
         if robber:
             outgoing_troops = check_troops(browser)
             if outgoing_troops:
@@ -23,7 +27,9 @@ def robber_hideout_thread(browser: client, interval: int) -> None:
         time.sleep(interval)
         log("Refreshing the page.")
         browser.refresh()
+        """
         time.sleep(25)
+
 
 @use_browser
 def send_troops(browser: client, robber) -> None:
@@ -35,7 +41,8 @@ def send_troops(browser: client, robber) -> None:
     item_pos1 = browser.find("//div[contains(@class, 'item pos1')]")
     browser.click(item_pos1, 2)
 
-    raid_button = browser.find("//div[contains(@class, 'clickableContainer missionType4')]")
+    raid_button = browser.find(
+        "//div[contains(@class, 'clickableContainer missionType4')]")
     browser.click(raid_button, 2)
 
     input = browser.find("//tbody[contains(@class, 'inputTroops')]/tr")
@@ -49,11 +56,14 @@ def send_troops(browser: client, robber) -> None:
             time.sleep(1)
 
     time.sleep(1)
-    send_button_1 = browser.find("//button[contains(@class, 'next clickable')]")
+    send_button_1 = browser.find(
+        "//button[contains(@class, 'next clickable')]")
     browser.click(send_button_1, 2)
 
-    send_button_2 = browser.find("//button[contains(@class, 'sendTroops clickable')]")
+    send_button_2 = browser.find(
+        "//button[contains(@class, 'sendTroops clickable')]")
     browser.click(send_button_2, 2)
+
 
 @use_browser
 def check_troops(browser: client) -> bool:
@@ -70,10 +80,11 @@ def check_troops(browser: client) -> bool:
 
     return False
 
+
 @use_browser
-def check_robber(browser: client):
-    map_button = browser.find("//a[contains(@class, 'navi_map bubbleButton')]")
-    browser.click(map_button, 1)
+def check_robber(browser: client) -> int:
+    open_map(browser)
+
     overlay_markers = browser.find("//div[@id='overlayMarkers']")
     divs = overlay_markers.find_elements_by_xpath(".//div")
     for listed in divs:
@@ -84,6 +95,26 @@ def check_robber(browser: client):
             if "jsVillageType5" in span_attribute:
                 browser.hover(span)
                 browser.hover(span)
-                return span
+                browser.click(span, 1)
+                browser.click(span, 1)
 
-    return None
+                table = browser.find("//tbody[@class='originalTroops']")
+                units = table.find_elements_by_xpath(".//td")
+
+                max_unit_count = 0
+
+                for unit in units:
+                    unit_count = 0
+                    span = unit.find_element_by_xpath(".//span")
+                    inner = span.get_attribute("innerHTML")
+                    if inner is not "-":
+                        try:
+                            unit_count = int(inner)
+                        except:
+                            unit_count = 0
+
+                    max_unit_count += unit_count
+
+                return max_unit_count
+
+    return -1
