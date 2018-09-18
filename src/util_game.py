@@ -75,3 +75,28 @@ def troops_name(browser: client, tribe: str) -> list:
                    "tribe_2":
                    ["clubswinger", "spearfighter", "axefighter", "scout", "paladin", "teutonic_knight", "ram", "catapult", "chief", "settler", "hero"]}
     return troops_dict[tribe.lower()]
+
+
+class unit:
+    def __init__(self, id: int, name: str, is_off: bool, is_def: bool):
+        self.id = id
+        self.name = name
+        self.is_off = is_off
+        self.is_def = is_def
+
+
+unitdetails = {'roman': {
+        1: unit(1, 'legionnaire', True, True),
+        2: unit(2, 'praetorian', False, True),
+        3: unit(3, 'imperian', True, False),
+        4: unit(4, 'equites legati', False, False),
+        5: unit(5, 'equites imperatoris', True, False),
+        6: unit(6, 'equites caesaris', True, True),
+        7: unit(7, 'battering ram', True, False),
+        8: unit(8, 'fire catapult', True, False),
+        9: unit(9, 'senator', True, False),
+        10: unit(10, 'settler', False, False)
+    }, 'teuton': {
+    }, 'gaul': {
+    }
+}

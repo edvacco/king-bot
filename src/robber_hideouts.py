@@ -7,9 +7,14 @@ from .village import open_city, open_map
 
 def robber_hideout_thread(browser: client, village: int, interval: int) -> None:
     while True:
-        robber = check_robber(browser)
+        robber_count = check_robber(browser)
 
-        log(robber)
+        if robber_count >= 0:
+            # found a hideout
+            pass
+
+            #
+        log(robber_count)
         """
         if robber:
             outgoing_troops = check_troops(browser)
@@ -28,7 +33,7 @@ def robber_hideout_thread(browser: client, village: int, interval: int) -> None:
         log("Refreshing the page.")
         browser.refresh()
         """
-        time.sleep(25)
+        time.sleep(interval)
 
 
 @use_browser
